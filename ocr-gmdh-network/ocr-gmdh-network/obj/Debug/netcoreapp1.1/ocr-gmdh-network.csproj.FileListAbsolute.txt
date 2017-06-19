@@ -1,0 +1,9 @@
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\bin\Debug\netcoreapp1.1\ocr-gmdh-network.deps.json
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\bin\Debug\netcoreapp1.1\ocr-gmdh-network.runtimeconfig.json
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\bin\Debug\netcoreapp1.1\ocr-gmdh-network.runtimeconfig.dev.json
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\bin\Debug\netcoreapp1.1\ocr-gmdh-network.dll
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\bin\Debug\netcoreapp1.1\ocr-gmdh-network.pdb
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\obj\Debug\netcoreapp1.1\ocr-gmdh-network.csprojResolveAssemblyReference.cache
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\obj\Debug\netcoreapp1.1\ocr-gmdh-network.AssemblyInfo.cs
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\obj\Debug\netcoreapp1.1\ocr-gmdh-network.dll
+D:\Dev\poli\optical-character-recognition-with-gmdh-network\ocr-gmdh-network\ocr-gmdh-network\obj\Debug\netcoreapp1.1\ocr-gmdh-network.pdb
