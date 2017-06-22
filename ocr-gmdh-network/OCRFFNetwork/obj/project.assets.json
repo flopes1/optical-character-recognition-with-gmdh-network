@@ -7042,10 +7042,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Dev\\poli\\optical-character-recognition-with-gmdh-network\\ocr-gmdh-network\\ocr-gmdh-network\\ocr-network.csproj",
-      "projectName": "ocr-network",
-      "projectPath": "D:\\Dev\\poli\\optical-character-recognition-with-gmdh-network\\ocr-gmdh-network\\ocr-gmdh-network\\ocr-network.csproj",
-      "outputPath": "D:\\Dev\\poli\\optical-character-recognition-with-gmdh-network\\ocr-gmdh-network\\ocr-gmdh-network\\obj\\",
+      "projectUniqueName": "D:\\Dev\\poli\\optical-character-recognition-with-gmdh-network\\ocr-gmdh-network\\OCRFFNetwork\\OCRFFNetwork.csproj",
+      "projectName": "OCRFFNetwork",
+      "projectPath": "D:\\Dev\\poli\\optical-character-recognition-with-gmdh-network\\ocr-gmdh-network\\OCRFFNetwork\\OCRFFNetwork.csproj",
+      "outputPath": "D:\\Dev\\poli\\optical-character-recognition-with-gmdh-network\\ocr-gmdh-network\\OCRFFNetwork\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"

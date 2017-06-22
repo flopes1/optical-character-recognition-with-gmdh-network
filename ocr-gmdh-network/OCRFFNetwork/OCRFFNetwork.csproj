@@ -6,15 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="dataHandler\" />
-    <Folder Include="model\" />
+    <Folder Include="dataset\" />
     <Folder Include="api\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="network-config.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-    </None>
+    <Folder Include="model\" />
   </ItemGroup>
 
 </Project>
