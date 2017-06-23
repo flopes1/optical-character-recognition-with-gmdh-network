@@ -7,11 +7,11 @@ namespace OCRFFNetwork.model
 {
 	public class Neuron
 	{
-		public Neuron(int inputs, SigmoidFunction function, ObservableCollection<Double> weightList)
+		public Neuron(int inputs, SigmoidFunction function)
 		{
 			_activationFunction = function;
 			_inputsCount = Math.Max(1, inputs);
-			_weightList = weightList;
+			_weightList = new ObservableCollection<Double>();
 			this.Randomize();
 		}
 
@@ -97,7 +97,7 @@ namespace OCRFFNetwork.model
 			{
 				if (value != _outputValue)
 				{
-					_inputValue = value;
+					_outputValue = value;
 				}
 			}
 		}
