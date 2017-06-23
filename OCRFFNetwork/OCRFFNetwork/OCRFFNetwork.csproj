@@ -46,8 +46,9 @@
   <ItemGroup>
     <Compile Include="model\AlphabetDataset.cs" />
     <Compile Include="model\EnumDatasetType.cs" />
-    <Compile Include="model\image\CharacterDatasetHandler.cs" />
-    <Compile Include="model\image\ImageUtils.cs" />
+    <Compile Include="model\Example.cs" />
+    <Compile Include="api\image\CharacterDatasetHandler.cs" />
+    <Compile Include="api\image\ImageUtils.cs" />
     <Compile Include="model\Letter.cs" />
     <Compile Include="Network.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -65,7 +66,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="api\" />
     <Folder Include="dataset\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
