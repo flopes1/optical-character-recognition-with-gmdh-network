@@ -8,7 +8,6 @@
   <ItemGroup>
     <Folder Include="dataset\" />
     <Folder Include="api\" />
-    <Folder Include="model\" />
   </ItemGroup>
 
 </Project>
