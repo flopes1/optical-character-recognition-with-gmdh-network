@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OCRFFNetwork.model;
 using System.Text;
 
 namespace OCRFFNetwork.api
