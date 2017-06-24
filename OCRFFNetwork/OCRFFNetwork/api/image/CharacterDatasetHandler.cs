@@ -1,4 +1,5 @@
 ﻿using OCRFFNetwork.model;
+using OCRFFNetwork.model.api.image;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

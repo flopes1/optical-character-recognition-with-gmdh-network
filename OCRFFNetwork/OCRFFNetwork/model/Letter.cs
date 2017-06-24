@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using OCRFFNetwork.model.api.image;
+using System.Collections.ObjectModel;
 using System.Drawing;
 
 namespace OCRFFNetwork.model
@@ -8,7 +9,7 @@ namespace OCRFFNetwork.model
 
         #region Internal Metods
 
-        public ObservableCollection<int> GetImagePixels(int imageIndex)
+        public ObservableCollection<double> GetImagePixels(int imageIndex)
         {
             return ImageUtils.GetImagePixels(this.ImagesPath[imageIndex]);
         }

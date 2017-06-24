@@ -4,51 +4,52 @@ using System.Text;
 
 namespace OCRFFNetwork.model
 {
-	public class DoubleRange
-	{
-		private double min, max;
+    public class DoubleRange
+    {
+        public DoubleRange(double min, double max)
+        {
+            this.min = min;
+            this.max = max;
+        }
 
-		public double Min
-		{
-			get
-			{
-				return min;
-			}
+        private double min, max;
 
-			set
-			{
-				if (value != min)
-				{
-					min = value;
-				}
-			}
-		}
+        public double Min
+        {
+            get
+            {
+                return min;
+            }
 
-		public double Max
-		{
-			get
-			{
-				return max;
-			}
+            set
+            {
+                if (value != min)
+                {
+                    min = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (value != max)
-				{
-					max = value;
-				}
-			}
-		}
+        public double Max
+        {
+            get
+            {
+                return max;
+            }
 
-		public double Length
-		{
-			get { return max - min; }
-		}
+            set
+            {
+                if (value != max)
+                {
+                    max = value;
+                }
+            }
+        }
 
-		public DoubleRange(double min, double max)
-		{
-			this.min = min;
-			this.max = max;
-		}
-	}
+        public double Length
+        {
+            get { return max - min; }
+        }
+
+    }
 }

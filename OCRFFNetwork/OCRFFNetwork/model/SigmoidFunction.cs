@@ -4,18 +4,23 @@ using System.Text;
 
 namespace OCRFFNetwork.model
 {
-	//Essa classe representa a função de ativação Sigmóide Logística.
+
     public class SigmoidFunction
     {
-		public double Calculate(double x)
+		public double Calculate(double neti)
 		{
-			return (1 / (1 + Math.Pow(Math.E, -x)));
+			return (1 / (1 + Math.Pow(Math.E, -neti)));
 		}
 
-		public double CalculateDerivative(double x)
+		public double CalculateAndDerivative(double neti)
 		{
-			double y = Calculate(x);
+			double y = Calculate(neti);
 			return (y * (1 - y));
 		}
+
+        public double CalculateDerivate(double yi)
+        {
+            return yi * (1 - yi);
+        }
 	}
 }

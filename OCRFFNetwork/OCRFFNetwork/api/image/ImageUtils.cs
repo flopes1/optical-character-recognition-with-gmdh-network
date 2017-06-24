@@ -66,9 +66,9 @@ namespace OCRFFNetwork.model.api.image
             return bmp;
         }
 
-        public static ObservableCollection<int> GetImagePixels(string imagePath)
+        public static ObservableCollection<double> GetImagePixels(string imagePath)
         {
-            var imagePixels = new ObservableCollection<int>();
+            var imagePixels = new ObservableCollection<double>();
 
             if (File.Exists(imagePath))
             {
