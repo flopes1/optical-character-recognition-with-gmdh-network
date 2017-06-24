@@ -50,7 +50,7 @@ namespace OCRFFNetwork.model
                     ImagesPath = new ObservableCollection<string>(Directory.GetFiles(letterFullPath))
                 };
 
-                this.Alphabet.Add(letter);
+                this.Letters.Add(letter);
             }
 
         }
@@ -83,23 +83,23 @@ namespace OCRFFNetwork.model
 
         #region Alphabet
 
-        private ObservableCollection<Letter> _alphabet = new ObservableCollection<Letter>();
+        private ObservableCollection<Letter> _letters = new ObservableCollection<Letter>();
 
-        public ObservableCollection<Letter> Alphabet
+        public ObservableCollection<Letter> Letters
         {
             get
             {
-                return _alphabet;
+                return _letters;
             }
 
             set
             {
-                if (value == _alphabet)
+                if (value == _letters)
                 {
                     return;
                 }
 
-                _alphabet = value;
+                _letters = value;
             }
 
         }

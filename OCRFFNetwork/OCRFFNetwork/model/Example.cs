@@ -29,9 +29,9 @@ namespace OCRFFNetwork.model
             }
         }
 
-        private ObservableCollection<int> _inputValues = new ObservableCollection<int>();
+        private ObservableCollection<double> _inputValues = new ObservableCollection<double>();
 
-        public ObservableCollection<int> InputValues
+        public ObservableCollection<double> InputValues
         {
             get
             {
@@ -48,9 +48,9 @@ namespace OCRFFNetwork.model
             }
         }
 
-        private ObservableCollection<int> _wantedValues = new ObservableCollection<int>();
+        private ObservableCollection<double> _wantedValues = new ObservableCollection<double>();
 
-        public ObservableCollection<int> WantedValues
+        public ObservableCollection<double> WantedValues
         {
             get
             {
