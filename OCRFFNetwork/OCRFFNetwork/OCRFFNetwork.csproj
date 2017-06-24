@@ -44,12 +44,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="api\Utils\DatasetUtils.cs" />
     <Compile Include="model\AlphabetDataset.cs" />
+    <Compile Include="model\Cycle.cs" />
+    <Compile Include="model\DoubleRange.cs" />
     <Compile Include="model\EnumDatasetType.cs" />
     <Compile Include="model\Example.cs" />
     <Compile Include="api\image\CharacterDatasetHandler.cs" />
     <Compile Include="api\image\ImageUtils.cs" />
+    <Compile Include="model\INetwork.cs" />
+    <Compile Include="model\Layer.cs" />
     <Compile Include="model\Letter.cs" />
+    <Compile Include="model\MultiLayerNetwork.cs" />
+    <Compile Include="model\Neuron.cs" />
+    <Compile Include="model\SigmoidFunction.cs" />
     <Compile Include="Network.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
