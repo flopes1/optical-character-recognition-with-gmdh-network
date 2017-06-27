@@ -11,9 +11,9 @@ namespace OCRFFNetwork.model
     {
         ObservableCollection<double> ForwardStep(Example currentExample);
         void TrainNetwork();
-        void UpdateNetworkWeights();
+        void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer);
         bool CheckElement(Example elemtToTest);
         void SaveCurrentWeights();
-        void BackwardSted(Example currentExample);
+        void BackwordStep(Example currentExample);
     }
 }

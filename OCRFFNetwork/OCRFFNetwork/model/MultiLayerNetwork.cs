@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using OCRFFNetwork.model;
 using System.Text;
 using System.Linq;
+using System.IO;
 
 namespace OCRFFNetwork.model
 {
@@ -50,7 +51,9 @@ namespace OCRFFNetwork.model
                 foreach (var example in cycle.Examples)
                 {
                     //Treina exemplos do ciclo
-                    this.SaveCurrentWeights();
+
+					//Local de salvamento correto?
+                    //this.SaveCurrentWeights();
 
                     var exampleResult = this.ForwardStep(example);
 
@@ -58,9 +61,10 @@ namespace OCRFFNetwork.model
                     if (!this.CheckResult(exampleResult, example.WantedValues))
                     {
                         this.SetOutputLayerError(example.WantedValues);
-                        this.BackwardSted(example);
-                        this.UpdateNetworkWeights();
-                    }
+                        this.BackwordStep(example);
+						this.SaveCurrentWeights();
+						//this.UpdateNetworkWeights(); vai ser chamado dentro do backword.
+					}
                 }
             }
         }
@@ -105,35 +109,128 @@ namespace OCRFFNetwork.model
             return previousLayerOutput;
         }
 
-        public void UpdateNetworkWeights()
+        public void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer)
         {
-            throw new NotImplementedException();
-        }
+			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
 
-        /**
+			//gambiarra
+			Layer hiddenLayer;
+			foreach (Layer layer in this.Layers)
+			{
+				if (layer.Number == 2)
+				{
+					hiddenLayer = layer;
+
+					foreach (Neuron neuron in hiddenLayer.Neurons)
+					{
+						for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+						{
+							for (int j = 0; j < hiddenLayer.Neurons[i].Weights.Length; j++)
+							{
+								hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * hiddenLayer.Neurons[i].Output;
+							}
+						}
+					}
+				}
+			}
+			//fim da gambiarra
+
+			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
+			Layer firstLayer = this.Layers.FirstOrDefault();
+			foreach (Neuron neuron in firstLayer.Neurons)
+			{
+				for (int i = 0; i < firstLayer.Neurons.Count; i++)
+				{
+					for (int j = 0; j < firstLayer.Neurons[i].Weights.Length; j++)
+					{
+						firstLayer.Neurons[i].Weights[j] = firstLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i] * firstLayer.Neurons[i].Input;
+					}
+				}
+			}
+		}
+
+		/**
          *  Metodo que vai usar a rede já treinada e testar o resultado para o exemplo passado
-         * 
          * */
-        public bool CheckElement(Example elemtToTest)
+		public bool CheckElement(Example elemtToTest)
         {
             throw new NotImplementedException();
         }
 
         public void SaveCurrentWeights()
         {
-            //Pode salvar em txt mesmo separando os pesos por ponto e virgula
-            //Salva no pacote dataset, cria uma pasta weigths
-            throw new NotImplementedException();
+			//Pode salvar em txt mesmo separando os pesos por ponto e virgula
+			//Salva no pacote dataset, cria uma pasta weigths
+
+			string path = @"../dataset/weights/weightsSaved.txt";
+
+			//Cria o arquivo se este nao existir (no caso de não dar append, e realmente sobrescrever, retirar o parâmetro true.
+			TextWriter tw = new StreamWriter(path, true);
+			
+			foreach (Layer layer in this._layers)
+			{
+				tw.WriteLine("Layer: ");
+				foreach (Neuron neuron in layer.Neurons)
+				{
+					tw.WriteLine($"Neuron {neuron.Index}:");
+					foreach (var weight in neuron.Weights)
+					{
+						tw.WriteLine($"{weight}");
+					}
+				}
+			}
         }
 
-        public void BackwardSted(Example currentExample)
+        public void BackwordStep(Example currentExample)
         {
-            //TODO ...
+			//A fase backword inicia com o cálculo da sensibilidade para os neurônios da camada de saída.
+			//sensibilidade = derivada da função de ativação vezes o erro.
 
-        }
+			Layer lastLayer = this.Layers.LastOrDefault();
+			double[] outputErrors = new double[lastLayer.Neurons.Count];
+			double[] sensibilitiesOfOutputLayer = new double[lastLayer.Neurons.Count];
 
-        //TODO adicionar configurações do calculo da sensibilidade
-        private void LoadNetworkConfigurations()
+			//Obtendo a sensibilidade dos neurônios da camada de saída
+			for (int i = 0; i < lastLayer.Neurons.Count; i++)
+			{
+				outputErrors[i] = lastLayer.Neurons[i].Error;
+				sensibilitiesOfOutputLayer[i] = outputErrors[i] * lastLayer.Neurons[i].ActivationFunction.CalculateDerivate(lastLayer.Neurons[i].Output);
+			}
+
+			//gambiarra
+			Layer hiddenLayer;
+			foreach (Layer layer in this.Layers)
+			{
+				if (layer.Number == 2)
+				{
+					hiddenLayer = layer;
+					double[] sensibilitiesOfHiddenLayer = new double[hiddenLayer.Neurons.Count];
+
+					//obtendo a sensibilidade dos neurônios da camada escondida
+					// f¹'(net¹) * Somatorio ((W²ij).d²i )
+					double sum = 0;
+
+					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+					{
+						for (int j = 0; j < hiddenLayer.Neurons[i].Weights.Length; j++)
+						{
+							sum += hiddenLayer.Neurons[i].Weights[j] * sensibilitiesOfOutputLayer[i];
+						}
+						sensibilitiesOfHiddenLayer[i] = hiddenLayer.Neurons[i].ActivationFunction.CalculateDerivate(hiddenLayer.Neurons[i].Output) * sum;
+					}
+
+					//Agora, atualizar os pesos.
+					this.UpdateNetworkWeights(sensibilitiesOfHiddenLayer, sensibilitiesOfOutputLayer);
+				}
+			}
+			//fim da gambiarra
+
+
+			
+		}
+
+		//TODO adicionar configurações do calculo da sensibilidade
+		private void LoadNetworkConfigurations()
         {
             this.LearningRate = Network.Default.LearningRate;
         }

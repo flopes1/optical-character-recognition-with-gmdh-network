@@ -58,7 +58,16 @@ namespace OCRFFNetwork.model
 
         }
 
-        private int _number;
+        public bool IsFirstLayer
+        {
+            get
+            {
+                return this.Number == 1;
+            }
+        }
+
+		#region Properties
+		private int _number;
 
         public int Number
         {
@@ -144,12 +153,7 @@ namespace OCRFFNetwork.model
             }
         }
 
-        public bool IsFirstLayer
-        {
-            get
-            {
-                return this.Number == 1;
-            }
-        }
     }
+
+	#endregion
 }

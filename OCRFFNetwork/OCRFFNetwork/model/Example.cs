@@ -10,62 +10,64 @@ namespace OCRFFNetwork.model
     public class Example
     {
 
-        private string _name;
+		#region Properties
+		private string _name;
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if(_name == value)
-                {
-                    return;
-                }
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+			set
+			{
+				if (_name == value)
+				{
+					return;
+				}
 
-                _name = value;
-            }
-        }
+				_name = value;
+			}
+		}
 
-        private ObservableCollection<double> _inputValues = new ObservableCollection<double>();
+		private ObservableCollection<double> _inputValues = new ObservableCollection<double>();
 
-        public ObservableCollection<double> InputValues
-        {
-            get
-            {
-                return _inputValues;
-            }
-            set
-            {
-                if(_inputValues == value)
-                {
-                    return;
-                }
+		public ObservableCollection<double> InputValues
+		{
+			get
+			{
+				return _inputValues;
+			}
+			set
+			{
+				if (_inputValues == value)
+				{
+					return;
+				}
 
-                _inputValues = value;
-            }
-        }
+				_inputValues = value;
+			}
+		}
 
-        private ObservableCollection<double> _wantedValues = new ObservableCollection<double>();
+		private ObservableCollection<double> _wantedValues = new ObservableCollection<double>();
 
-        public ObservableCollection<double> WantedValues
-        {
-            get
-            {
-                return _wantedValues;
-            }
-            set
-            {
-                if (_wantedValues == value)
-                {
-                    return;
-                }
+		public ObservableCollection<double> WantedValues
+		{
+			get
+			{
+				return _wantedValues;
+			}
+			set
+			{
+				if (_wantedValues == value)
+				{
+					return;
+				}
 
-                _wantedValues = value;
-            }
-        }
+				_wantedValues = value;
+			}
+		} 
+		#endregion
 
-    }
+	}
 }
