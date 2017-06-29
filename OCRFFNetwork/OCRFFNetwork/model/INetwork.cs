@@ -10,10 +10,10 @@ namespace OCRFFNetwork.model
     public interface INetwork
     {
         ObservableCollection<double> ForwardStep(Example currentExample);
-        void TrainNetwork();
+        void TrainNetwork(ObservableCollection<double> meanSquaredErrors);
         void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer);
         bool CheckElement(Example elemtToTest);
         void SaveCurrentWeights();
-        void BackwordStep(Example currentExample);
+        void BackwardStep(Example currentExample);
     }
 }

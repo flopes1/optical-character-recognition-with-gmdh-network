@@ -30,10 +30,10 @@ namespace OCRFFNetwork.model
                     alphabetType = Network.Default.TrainDirectory;
                     break;
                 case EnumDatasetType.Test:
-                    alphabetType = Network.Default.TrainDirectory;
+                    alphabetType = Network.Default.TestDirectory;
                     break;
                 case EnumDatasetType.Validation:
-                    alphabetType = Network.Default.TrainDirectory;
+                    alphabetType = Network.Default.ValidationDirectory;
                     break;
             }
 
