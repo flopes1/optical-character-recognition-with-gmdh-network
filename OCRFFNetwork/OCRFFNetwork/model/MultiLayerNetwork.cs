@@ -78,10 +78,13 @@ namespace OCRFFNetwork.model
 				//Calculando o EMQ - Erro médio quadrático.
 				this.MeanSquareErrorsFromCycles.Add(sum / countWantedValues);
 
-				if (meanSquaredErrors[i] > this.MeanSquareErrorsFromCycles[i])
+				if (meanSquaredErrors != null)
 				{
-					//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
-					break;
+					if (meanSquaredErrors[i] > this.MeanSquareErrorsFromCycles[i])
+					{
+						//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
+						break;
+					} 
 				}
 			}
 
