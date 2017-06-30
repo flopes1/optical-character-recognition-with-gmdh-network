@@ -141,32 +141,52 @@ namespace OCRFFNetwork.model
 				{
 					hiddenLayer = layer;
 
-					foreach (Neuron neuron in hiddenLayer.Neurons)
+					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
 					{
-						for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+						for (int j = 0; j < sensibilitiesOfOutputLayer.Length; j++)
 						{
-							for (int j = 0; j < hiddenLayer.Neurons[i].Weights.Length; j++)
-							{
-								hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * hiddenLayer.Neurons[i].Output;
-							}
+							hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[j] * hiddenLayer.Neurons[i].Output;
 						}
 					}
 				}
 			}
 			//fim da gambiarra
 
+
 			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
 			Layer firstLayer = this.Layers.FirstOrDefault();
-			foreach (Neuron neuron in firstLayer.Neurons)
+
+			/* ##############################Pesos estão nulos para todos os neurônios!!!!########################################
+			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
+			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
+			 * Pesos estão nulos para todos os neurônios!!!! Pesos estão nulos para todos os neurônios!!!!
+			 * firstLayer.Neurons[i].Weights[j] nulo.
+			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
+			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
+			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
+			 */
+
+			for (int i = 0; i < firstLayer.Neurons.Count; i++)
 			{
-				for (int i = 0; i < firstLayer.Neurons.Count; i++)
+				for (int j = 0; j < sensibilitiesOfHiddenLayer.Length; j++)
 				{
-					for (int j = 0; j < firstLayer.Neurons[i].Weights.Length; j++)
-					{
-						firstLayer.Neurons[i].Weights[j] = firstLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i] * firstLayer.Neurons[i].Input;
-					}
+					firstLayer.Neurons[i].Weights[j] = firstLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * firstLayer.Neurons[i].Input;
 				}
 			}
+
+			//foreach (Neuron neuron in firstLayer.Neurons)
+			//{
+			//	for (int i = 0; i < firstLayer.Neurons.Count; i++)
+			//	{
+			//		for (int j = 0; j < firstLayer.Neurons[i].Weights.Length; j++)
+			//		{
+			//			if (firstLayer.Neurons[i].Input != 0)
+			//			{
+			//				firstLayer.Neurons[i].Weights[j] = firstLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * firstLayer.Neurons[i].Input;
+			//			}
+			//		}
+			//	}
+			//}
 		}
 
 		/**
@@ -182,7 +202,7 @@ namespace OCRFFNetwork.model
 			//Pode salvar em txt mesmo separando os pesos por ponto e virgula
 			//Salva no pacote dataset, cria uma pasta weigths
 
-			string path = @"../dataset/weights/weightsSaved.txt";
+			string path = @"../weights/weightsSaved.txt";
 
 			//Cria o arquivo se este nao existir (no caso de não querer dar append, e realmente sobrescrever, retirar o parâmetro true.
 			TextWriter tw = new StreamWriter(path, true);
@@ -232,11 +252,13 @@ namespace OCRFFNetwork.model
 
 					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
 					{
-						for (int j = 0; j < hiddenLayer.Neurons[i].Weights.Length; j++)
+						//hiddenLayer.Neurons[i].Weights.Length
+						for (int j = 0; j < lastLayer.Neurons.Count; j++)
 						{
-							sum += hiddenLayer.Neurons[i].Weights[j] * sensibilitiesOfOutputLayer[i];
+							sum += hiddenLayer.Neurons[i].Weights[j] * sensibilitiesOfOutputLayer[j];
 						}
 						sensibilitiesOfHiddenLayer[i] = hiddenLayer.Neurons[i].ActivationFunction.CalculateDerivate(hiddenLayer.Neurons[i].Output) * sum;
+						sum = 0;
 					}
 
 					//Agora, atualizar os pesos.

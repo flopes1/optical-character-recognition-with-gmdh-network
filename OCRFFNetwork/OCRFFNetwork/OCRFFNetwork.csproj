@@ -74,7 +74,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="dataset\weights\" />
+    <Folder Include="dataset\" />
+    <Folder Include="weights\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -44,9 +44,9 @@ namespace OCRFFNetwork
 
 			//var example = new Example()
 			//{
-			//    Name = "A",
-			//    InputValues = new ObservableCollection<double>(new double[] { 1, 0 }),
-			//    WantedValues = new ObservableCollection<double>(new double[] { 0, 0 })
+			//	Name = "A",
+			//	InputValues = new ObservableCollection<double>(new double[] { 1, 0 }),
+			//	WantedValues = new ObservableCollection<double>(new double[] { 0, 0 })
 			//};
 
 
