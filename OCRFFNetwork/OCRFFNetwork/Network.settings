@@ -26,5 +26,8 @@
     <Setting Name="LettersInAlphabet" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">26</Value>
     </Setting>
+    <Setting Name="WeightsDirectory" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">..\..\weights\weightsSaved.txt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

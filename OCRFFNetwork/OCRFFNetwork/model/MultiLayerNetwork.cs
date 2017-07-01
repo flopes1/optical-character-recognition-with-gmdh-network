@@ -68,7 +68,7 @@ namespace OCRFFNetwork.model
 						this.SaveCurrentWeights();
 					}
 
-					for (int j = 0; j < exampleResult.Count; j++)
+					for (int j = 0; j < countWantedValues; j++)
 					{
 						sum += Math.Pow(exampleResult[j] - example.WantedValues[j], 2);
 					}
@@ -131,7 +131,7 @@ namespace OCRFFNetwork.model
 
 		public void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer)
 		{
-			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
+			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
 
 			//gambiarra
 			Layer hiddenLayer;
@@ -152,41 +152,16 @@ namespace OCRFFNetwork.model
 			}
 			//fim da gambiarra
 
+			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
+			Layer lastLayer = this.Layers.LastOrDefault();
 
-			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
-			Layer firstLayer = this.Layers.FirstOrDefault();
-
-			/* ##############################Pesos estão nulos para todos os neurônios!!!!########################################
-			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
-			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
-			 * Pesos estão nulos para todos os neurônios!!!! Pesos estão nulos para todos os neurônios!!!!
-			 * firstLayer.Neurons[i].Weights[j] nulo.
-			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
-			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
-			 * ##############################Pesos estão nulos para todos os neurônios!!!!########################################
-			 */
-
-			for (int i = 0; i < firstLayer.Neurons.Count; i++)
+			for (int i = 0; i < lastLayer.Neurons.Count; i++)
 			{
 				for (int j = 0; j < sensibilitiesOfHiddenLayer.Length; j++)
 				{
-					firstLayer.Neurons[i].Weights[j] = firstLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * firstLayer.Neurons[i].Input;
+					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * lastLayer.Neurons[i].Input;
 				}
 			}
-
-			//foreach (Neuron neuron in firstLayer.Neurons)
-			//{
-			//	for (int i = 0; i < firstLayer.Neurons.Count; i++)
-			//	{
-			//		for (int j = 0; j < firstLayer.Neurons[i].Weights.Length; j++)
-			//		{
-			//			if (firstLayer.Neurons[i].Input != 0)
-			//			{
-			//				firstLayer.Neurons[i].Weights[j] = firstLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * firstLayer.Neurons[i].Input;
-			//			}
-			//		}
-			//	}
-			//}
 		}
 
 		/**
@@ -200,22 +175,30 @@ namespace OCRFFNetwork.model
 		public void SaveCurrentWeights()
 		{
 			//Pode salvar em txt mesmo separando os pesos por ponto e virgula
-			//Salva no pacote dataset, cria uma pasta weigths
 
-			string path = @"../weights/weightsSaved.txt";
-
-			//Cria o arquivo se este nao existir (no caso de não querer dar append, e realmente sobrescrever, retirar o parâmetro true.
-			TextWriter tw = new StreamWriter(path, true);
-
-			foreach (Layer layer in this._layers)
+			//@"..\..\weights\weightsSaved.txt"
+			using (System.IO.StreamWriter file =
+			new System.IO.StreamWriter(Network.Default.WeightsDirectory, false))
 			{
-				tw.WriteLine("Layer: ");
-				foreach (Neuron neuron in layer.Neurons)
+				//decimal decimalVal;
+
+				//file.WriteLine("Fourth line");
+				foreach (Layer layer in this._layers)
 				{
-					tw.WriteLine($"Neuron {neuron.Index}:");
-					foreach (var weight in neuron.Weights)
+					if (!layer.IsFirstLayer)
 					{
-						tw.WriteLine($"{weight};");
+						//file.WriteLine("Layer " + layer.Number + ":");
+						foreach (Neuron neuron in layer.Neurons)
+						{
+							//file.WriteLine($"Neuron {neuron.Index}:");
+							foreach (var weight in neuron.Weights)
+							{
+								//decimalVal = Convert.ToDecimal(weight);
+								//file.WriteLine($"{decimalVal.ToString("#.#")};");
+								file.Write($"{weight.ToString("#.##")}; ");
+							}
+							file.WriteLine();
+						}
 					}
 				}
 			}
