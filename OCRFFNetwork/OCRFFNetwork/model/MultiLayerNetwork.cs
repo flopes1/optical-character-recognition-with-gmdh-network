@@ -152,8 +152,18 @@ namespace OCRFFNetwork.model
 
 		public void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer)
 		{
-			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
+			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
+			Layer lastLayer = this.Layers.LastOrDefault();
 
+			for (int i = 0; i < lastLayer.Neurons.Count; i++)
+			{
+				for (int j = 0; j < sensibilitiesOfOutputLayer.Length; j++)
+				{
+					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[j] * lastLayer.Neurons[i].Input;
+				}
+			}
+
+			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
 			//gambiarra
 			Layer hiddenLayer;
 			foreach (Layer layer in this.Layers)
@@ -164,25 +174,15 @@ namespace OCRFFNetwork.model
 
 					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
 					{
-						for (int j = 0; j < sensibilitiesOfOutputLayer.Length; j++)
+						for (int j = 0; j < sensibilitiesOfHiddenLayer.Length; j++)
 						{
-							hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[j] * hiddenLayer.Neurons[i].Output;
+							hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * hiddenLayer.Neurons[i].Input;
 						}
 					}
 				}
 			}
 			//fim da gambiarra
 
-			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
-			Layer lastLayer = this.Layers.LastOrDefault();
-
-			for (int i = 0; i < lastLayer.Neurons.Count; i++)
-			{
-				for (int j = 0; j < sensibilitiesOfHiddenLayer.Length; j++)
-				{
-					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * lastLayer.Neurons[i].Input;
-				}
-			}
 		}
 
 		/**
