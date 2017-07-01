@@ -20,14 +20,10 @@ namespace OCRFFNetwork
             var validationAlphabet = new AlphabetDataset(EnumDatasetType.Validation);
             var testAlphabet = new AlphabetDataset(EnumDatasetType.Test);
 
-            var cyclesToTrain = DatasetUtils.BuildCyclesFromDataset(trainAlphabet);
-			var cyclesToValidate = DatasetUtils.BuildCyclesFromDataset(validationAlphabet);
+            var cycles = DatasetUtils.BuildCyclesFromDataset(trainAlphabet, validationAlphabet, testAlphabet);
 
 
-            var network = new MultiLayerNetwork(cyclesToTrain);
-			var validationNetwork = new MultiLayerNetwork(cyclesToTrain, cyclesToValidate);
-
-			validationNetwork.TrainNetwork();
+            var network = new MultiLayerNetwork(cycles);
 			network.TrainNetwork();
 
 

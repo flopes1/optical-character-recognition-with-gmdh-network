@@ -13,11 +13,9 @@ namespace OCRFFNetwork.model
 	public class MultiLayerNetwork : INetwork
 	{
 
-		public MultiLayerNetwork(ObservableCollection<Cycle> cyclesTrain = null, ObservableCollection<Cycle> cyclesValidation = null)
+		public MultiLayerNetwork(ObservableCollection<Cycle> cycles = null)
 		{
-			this.CyclesTrainning = cyclesTrain;
-            this.CyclesValidation = cyclesValidation;
-			//this.MeanSquareErrosFromCycles = new double[this.Cycles.Count];
+			this.Cycles = cycles;
 			this.MeanSquareErrorsFromCycles = new ObservableCollection<double>();
 			this.LoadNetworkConfigurations();
 			this.BuildNetwork();
@@ -28,9 +26,9 @@ namespace OCRFFNetwork.model
 		private void BuildNetwork()
 		{
 
-			if (this.CyclesTrainning != null)
+			if (this.Cycles != null)
 			{
-				var exampleModel = this.CyclesTrainning.FirstOrDefault().ExamplesTrain.FirstOrDefault();
+				var exampleModel = this.Cycles.FirstOrDefault().ExamplesTrain.FirstOrDefault();
 
 				for (int i = 0; i < Network.Default.NumberOfLayers; i++)
 				{
@@ -48,15 +46,15 @@ namespace OCRFFNetwork.model
 
 		public void TrainNetwork()
 		{
-			for (int i = 0; i < this.CyclesTrainning.Count; i++)
+			double meanSquareErrorFromValidation = 0;
+
+			for (int i = 0; i < this.Cycles.Count; i++)
 			{
-				//Somatório das diferenças entre calculados e desejados.
 				double sum = 0, countWantedValues = 0;
 
-				foreach (var example in this.CyclesTrainning[i].ExamplesTrain)
+				//Treinamento
+				foreach (Example example in this.Cycles[i].ExamplesTrain)
 				{
-					//Treina exemplos do ciclo
-
 					var exampleResult = this.ForwardStep(example);
 					countWantedValues = example.WantedValues.Count;
 
@@ -71,24 +69,44 @@ namespace OCRFFNetwork.model
 
 					for (int j = 0; j < countWantedValues; j++)
 					{
-						sum += Math.Pow(exampleResult[j] - example.WantedValues[j], 2);
+						sum += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
 					}
-
 				}
 
-				//Calculando o EMQ - Erro médio quadrático.
+				//Adicionando EMQ do treinamento
 				this.MeanSquareErrorsFromCycles.Add(sum / countWantedValues);
 
-
-
-                if (meanSquaredErrors != null)
+				//Validação
+				if (this.Cycles[i].ExamplesValidation.Count > 0)
 				{
-					if (meanSquaredErrors[i] >= this.MeanSquareErrorsFromCycles[i])
+					foreach (Example example in this.Cycles[i].ExamplesValidation)
+					{
+						var exampleResult = this.ForwardStep(example);
+						countWantedValues = example.WantedValues.Count;
+
+						for (int j = 0; j < countWantedValues; j++)
+						{
+							sum += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
+						}
+					}
+
+					//EMQ do ciclo de validação.
+					meanSquareErrorFromValidation = (sum / countWantedValues);
+
+					if (i > 15 && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
 					{
 						//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
 						break;
-					} 
+					}
 				}
+				else
+				{
+					if (i > 0 && (this.MeanSquareErrorsFromCycles[i-1] <= 0.98 * this.MeanSquareErrorsFromCycles[i]))
+					{
+						break;
+					}
+				}
+			
 			}
 
 		}
@@ -179,9 +197,8 @@ namespace OCRFFNetwork.model
 		{
 			//Pode salvar em txt mesmo separando os pesos por ponto e virgula
 
-			//@"..\..\weights\weightsSaved.txt"
-			using (System.IO.StreamWriter file =
-			new System.IO.StreamWriter(Network.Default.WeightsDirectory, false))
+			using (StreamWriter file =
+			new StreamWriter(Network.Default.WeightsDirectory, false))
 			{
 				//decimal decimalVal;
 
@@ -286,7 +303,7 @@ namespace OCRFFNetwork.model
 
 		private ObservableCollection<Cycle> _cycles = new ObservableCollection<Cycle>();
 
-		public ObservableCollection<Cycle> CyclesTrainning
+		public ObservableCollection<Cycle> Cycles
 		{
 			get
 			{
@@ -354,8 +371,6 @@ namespace OCRFFNetwork.model
 				}
 			}
 		}
-
-        public ObservableCollection<Cycle> CyclesValidation { get; private set; }
 
         #endregion // Properties
     }
