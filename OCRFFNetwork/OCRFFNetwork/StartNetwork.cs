@@ -25,10 +25,10 @@ namespace OCRFFNetwork
 
 
             var network = new MultiLayerNetwork(cyclesToTrain);
-			var validationNetwork = new MultiLayerNetwork(cyclesToValidate);
+			var validationNetwork = new MultiLayerNetwork(cyclesToTrain, cyclesToValidate);
 
-			validationNetwork.TrainNetwork(null);
-			network.TrainNetwork(validationNetwork.MeanSquareErrorsFromCycles);
+			validationNetwork.TrainNetwork();
+			network.TrainNetwork();
 
 
 			//var input = "C:\\Users\\Filipe Lopes\\Desktop\\8º Periodo\\RNA\\Dataset\\Maiusculas";

@@ -13,9 +13,10 @@ namespace OCRFFNetwork.model
 	public class MultiLayerNetwork : INetwork
 	{
 
-		public MultiLayerNetwork(ObservableCollection<Cycle> cycles = null)
+		public MultiLayerNetwork(ObservableCollection<Cycle> cyclesTrain = null, ObservableCollection<Cycle> cyclesValidation = null)
 		{
-			this.Cycles = cycles;
+			this.CyclesTrainning = cyclesTrain;
+            this.CyclesValidation = cyclesValidation;
 			//this.MeanSquareErrosFromCycles = new double[this.Cycles.Count];
 			this.MeanSquareErrorsFromCycles = new ObservableCollection<double>();
 			this.LoadNetworkConfigurations();
@@ -27,9 +28,9 @@ namespace OCRFFNetwork.model
 		private void BuildNetwork()
 		{
 
-			if (this.Cycles != null)
+			if (this.CyclesTrainning != null)
 			{
-				var exampleModel = this.Cycles.FirstOrDefault().Examples.FirstOrDefault();
+				var exampleModel = this.CyclesTrainning.FirstOrDefault().Examples.FirstOrDefault();
 
 				for (int i = 0; i < Network.Default.NumberOfLayers; i++)
 				{
@@ -45,14 +46,14 @@ namespace OCRFFNetwork.model
 		}
 
 
-		public void TrainNetwork(ObservableCollection<double> meanSquaredErrors)
+		public void TrainNetwork()
 		{
-			for (int i = 0; i < this.Cycles.Count; i++)
+			for (int i = 0; i < this.CyclesTrainning.Count; i++)
 			{
 				//Somatório das diferenças entre calculados e desejados.
 				double sum = 0, countWantedValues = 0;
 
-				foreach (var example in this.Cycles[i].Examples)
+				foreach (var example in this.CyclesTrainning[i].Examples)
 				{
 					//Treina exemplos do ciclo
 
@@ -78,9 +79,11 @@ namespace OCRFFNetwork.model
 				//Calculando o EMQ - Erro médio quadrático.
 				this.MeanSquareErrorsFromCycles.Add(sum / countWantedValues);
 
-				if (meanSquaredErrors != null)
+
+
+                if (meanSquaredErrors != null)
 				{
-					if (meanSquaredErrors[i] > this.MeanSquareErrorsFromCycles[i])
+					if (meanSquaredErrors[i] >= this.MeanSquareErrorsFromCycles[i])
 					{
 						//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
 						break;
@@ -283,7 +286,7 @@ namespace OCRFFNetwork.model
 
 		private ObservableCollection<Cycle> _cycles = new ObservableCollection<Cycle>();
 
-		public ObservableCollection<Cycle> Cycles
+		public ObservableCollection<Cycle> CyclesTrainning
 		{
 			get
 			{
@@ -352,6 +355,8 @@ namespace OCRFFNetwork.model
 			}
 		}
 
-		#endregion // Properties
-	}
+        public ObservableCollection<Cycle> CyclesValidation { get; private set; }
+
+        #endregion // Properties
+    }
 }
