@@ -12,9 +12,16 @@ namespace OCRFFNetwork.model
 
         public Cycle()
         {
-            this.Examples = new ObservableCollection<Example>();
+            this.ExamplesTrain = new ObservableCollection<Example>();
+            this.ExamplesValidation = new ObservableCollection<Example>();
+            this.ExamplesTest = new ObservableCollection<Example>();
         }
 
-        public ObservableCollection<Example> Examples { get; set; }
+        public ObservableCollection<Example> ExamplesTrain { get; set; }
+
+        public ObservableCollection<Example> ExamplesValidation { get; set; }
+
+        public ObservableCollection<Example> ExamplesTest { get; set; }
+
     }
 }

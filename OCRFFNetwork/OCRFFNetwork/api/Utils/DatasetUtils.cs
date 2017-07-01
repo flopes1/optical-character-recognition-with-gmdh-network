@@ -31,7 +31,7 @@ namespace OCRFFNetwork.api.Utils
                         InputValues = letter.GetImagePixels(i),
                         WantedValues = GetLetterWantedValues(letter.Name)
                     };
-                    cycle.Examples.Add(example);
+                    cycle.ExamplesTrain.Add(example);
                 }
                 cycles.Add(cycle);
             }

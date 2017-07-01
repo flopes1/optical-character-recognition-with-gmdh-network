@@ -30,7 +30,7 @@ namespace OCRFFNetwork.model
 
 			if (this.CyclesTrainning != null)
 			{
-				var exampleModel = this.CyclesTrainning.FirstOrDefault().Examples.FirstOrDefault();
+				var exampleModel = this.CyclesTrainning.FirstOrDefault().ExamplesTrain.FirstOrDefault();
 
 				for (int i = 0; i < Network.Default.NumberOfLayers; i++)
 				{
@@ -53,7 +53,7 @@ namespace OCRFFNetwork.model
 				//Somatório das diferenças entre calculados e desejados.
 				double sum = 0, countWantedValues = 0;
 
-				foreach (var example in this.CyclesTrainning[i].Examples)
+				foreach (var example in this.CyclesTrainning[i].ExamplesTrain)
 				{
 					//Treina exemplos do ciclo
 
