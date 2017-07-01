@@ -11,19 +11,23 @@ namespace OCRFFNetwork.api.Utils
     public class DatasetUtils
     {
 
-        public static ObservableCollection<Cycle> BuildCyclesFromDataset(AlphabetDataset currentAlphabet)
+        public static ObservableCollection<Cycle> BuildCyclesFromDataset(AlphabetDataset trainAlphabet, AlphabetDataset validationAlphabet, AlphabetDataset testAlphabet)
         {
             var cycles = new ObservableCollection<Cycle>();
 
-            var imagesPerLetter = currentAlphabet.Letters.FirstOrDefault().ImagesPath.Count;
-            var letterCount = currentAlphabet.Letters.Count;
+            var imagesPerLetterTrain = trainAlphabet.Letters.FirstOrDefault().ImagesPath.Count;
+            var imagesPerLetterValidation = validationAlphabet.Letters.FirstOrDefault().ImagesPath.Count;
+            var imagesPerLetterTest = testAlphabet.Letters.FirstOrDefault().ImagesPath.Count;
 
-            for (int i = 0; i < imagesPerLetter; i++)
+            var letterCount = trainAlphabet.Letters.Count;
+
+            for (int i = 0; i < imagesPerLetterTrain; i++)
             {
                 var cycle = new Cycle();
+
                 for (int j = 0; j < letterCount; j++)
                 {
-                    var letter = currentAlphabet.Letters[j];
+                    var letter = trainAlphabet.Letters[j];
 
                     var example = new Example()
                     {
@@ -31,7 +35,35 @@ namespace OCRFFNetwork.api.Utils
                         InputValues = letter.GetImagePixels(i),
                         WantedValues = GetLetterWantedValues(letter.Name)
                     };
+
                     cycle.ExamplesTrain.Add(example);
+
+                    if(i < imagesPerLetterValidation && i < imagesPerLetterTest)
+                    {
+                        var letterValidation = validationAlphabet.Letters[j];
+
+                        var exampleValidation = new Example()
+                        {
+                            Name = letterValidation.Name,
+                            InputValues = letterValidation.GetImagePixels(i),
+                            WantedValues = GetLetterWantedValues(letterValidation.Name)
+                        };
+
+                        cycle.ExamplesValidation.Add(exampleValidation);
+
+                        var letterTest = testAlphabet.Letters[j];
+
+                        var exampleTest = new Example()
+                        {
+                            Name = letterTest.Name,
+                            InputValues = letterTest.GetImagePixels(i),
+                            WantedValues = GetLetterWantedValues(letterTest.Name)
+                        };
+
+                        cycle.ExamplesTest.Add(exampleTest);
+
+                    }
+
                 }
                 cycles.Add(cycle);
             }
