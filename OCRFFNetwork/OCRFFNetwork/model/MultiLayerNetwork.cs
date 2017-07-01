@@ -74,7 +74,7 @@ namespace OCRFFNetwork.model
 				}
 
 				//Adicionando EMQ do treinamento
-				this.MeanSquareErrorsFromCycles.Add(sum / countWantedValues);
+				this.MeanSquareErrorsFromCycles.Add(sum / Math.Pow(countWantedValues,2));
 
 				//Validação
 				if (this.Cycles[i].ExamplesValidation.Count > 0)
@@ -91,7 +91,7 @@ namespace OCRFFNetwork.model
 					}
 
 					//EMQ do ciclo de validação.
-					meanSquareErrorFromValidation = (sum / countWantedValues);
+					meanSquareErrorFromValidation = (sum / Math.Pow(countWantedValues, 2));
 
 					if (i > 15 && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
 					{
@@ -242,7 +242,7 @@ namespace OCRFFNetwork.model
 
 			//gambiarra
 			Layer hiddenLayer;
-			foreach (Layer layer in this.Layers)
+			 foreach (Layer layer in this.Layers)
 			{
 				if (layer.Number == 2)
 				{
