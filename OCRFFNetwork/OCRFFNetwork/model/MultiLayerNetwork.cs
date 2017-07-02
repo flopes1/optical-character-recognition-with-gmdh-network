@@ -58,7 +58,7 @@ namespace OCRFFNetwork.model
 					var exampleResult = this.ForwardStep(example);
 					countWantedValues = example.WantedValues.Count;
 
-					Console.WriteLine("Training example: " + example.Name + " in cycle: " + i + 1);
+					Console.WriteLine("Training example: " + example.Name + " in cycle: " + (i + 1));
 
 					//Se o resultado não for o esperado, precisa fazer a fase backward e atualizar os pesos
 					if (!this.CheckResult(exampleResult, example.WantedValues))
@@ -83,11 +83,12 @@ namespace OCRFFNetwork.model
 				//Adicionando EMQ do treinamento
 				this.MeanSquareErrorsFromCycles.Add(sum / Math.Pow(countWantedValues,2));
 
-				//Validação
-				if (this.Cycles[i].ExamplesValidation.Count > 0)
+                Console.WriteLine("EMQ Train: " + this.MeanSquareErrorsFromCycles.LastOrDefault());
+                //Validação
+                if (this.Cycles[i].ExamplesValidation.Count > 0)
 				{
 
-					Console.WriteLine("Calculating results for validation cycle: " + i + 1);
+					Console.WriteLine("Calculating results for validation cycle: " + (i + 1));
 
 					foreach (Example example in this.Cycles[i].ExamplesValidation)
 					{
@@ -103,10 +104,12 @@ namespace OCRFFNetwork.model
 					//EMQ do ciclo de validação.
 					meanSquareErrorFromValidation = (sum / Math.Pow(countWantedValues, 2));
 
+                    Console.WriteLine("EMQ validation:" + meanSquareErrorFromValidation);
+
 					if (i > Network.Default.IgnoreValidationNumber && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
 					{
 
-						Console.WriteLine("Finishing training cause EMQ method in cycle: " + i + 1);
+						Console.WriteLine("Finishing training cause EMQ method in cycle: " + (i + 1));
 
 						//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
 						break;
@@ -117,7 +120,7 @@ namespace OCRFFNetwork.model
 					if (i > 0 && (this.MeanSquareErrorsFromCycles[i-1] <= Network.Default.AcceptanceRatio * this.MeanSquareErrorsFromCycles[i]))
 					{
 
-						Console.WriteLine("Finishing training cause cross validation method in cycle: " + i + 1);
+						Console.WriteLine("Finishing training cause cross validation method in cycle: " + (i + 1));
 
 						break;
 					}
