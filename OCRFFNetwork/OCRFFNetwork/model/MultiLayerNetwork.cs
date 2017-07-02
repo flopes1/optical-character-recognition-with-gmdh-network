@@ -58,13 +58,17 @@ namespace OCRFFNetwork.model
 					var exampleResult = this.ForwardStep(example);
 					countWantedValues = example.WantedValues.Count;
 
+					Console.WriteLine("Training example: " + example.Name + " in cycle: " + i + 1);
+
 					//Se o resultado não for o esperado, precisa fazer a fase backward e atualizar os pesos
 					if (!this.CheckResult(exampleResult, example.WantedValues))
 					{
+
+						Console.WriteLine("Executing backward and updating weights");
+
 						this.SetOutputLayerError(example.WantedValues);
 						this.BackwardStep(example);
 						//O reajuste dos pesos está no final da backwardStep
-						//this.SaveCurrentWeights();
 					}
 
 					for (int j = 0; j < countWantedValues; j++)
@@ -73,12 +77,18 @@ namespace OCRFFNetwork.model
 					}
 				}
 
+
+				Console.WriteLine("Calculating EMQ members");
+
 				//Adicionando EMQ do treinamento
 				this.MeanSquareErrorsFromCycles.Add(sum / Math.Pow(countWantedValues,2));
 
 				//Validação
 				if (this.Cycles[i].ExamplesValidation.Count > 0)
 				{
+
+					Console.WriteLine("Calculating results for validation cycle: " + i + 1);
+
 					foreach (Example example in this.Cycles[i].ExamplesValidation)
 					{
 						var exampleResult = this.ForwardStep(example);
@@ -95,6 +105,9 @@ namespace OCRFFNetwork.model
 
 					if (i > Network.Default.IgnoreValidationNumber && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
 					{
+
+						Console.WriteLine("Finishing training cause EMQ method in cycle: " + i + 1);
+
 						//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
 						break;
 					}
@@ -103,12 +116,15 @@ namespace OCRFFNetwork.model
 				{
 					if (i > 0 && (this.MeanSquareErrorsFromCycles[i-1] <= Network.Default.AcceptanceRatio * this.MeanSquareErrorsFromCycles[i]))
 					{
+
+						Console.WriteLine("Finishing training cause cross validation method in cycle: " + i + 1);
+
 						break;
 					}
 				}
 			
 			}
-
+			this.SaveCurrentWeights();
 		}
 
 		private void SetOutputLayerError(ObservableCollection<double> wantedValues)
@@ -200,33 +216,34 @@ namespace OCRFFNetwork.model
 
 		public void SaveCurrentWeights()
 		{
-			//Pode salvar em txt mesmo separando os pesos por ponto e virgula
+			var filePath = Network.Default.WeightsDirectory;
 
-			using (StreamWriter file =
-			new StreamWriter(Network.Default.WeightsDirectory, false))
+			if (File.Exists(filePath))
 			{
-				//decimal decimalVal;
+				File.Delete(filePath);
+			}
 
-				//file.WriteLine("Fourth line");
-				foreach (Layer layer in this.Layers)
+			var writer = File.CreateText(filePath);
+
+			foreach (Layer layer in this.Layers)
+			{
+				if (!layer.IsFirstLayer)
 				{
-					if (!layer.IsFirstLayer)
+					foreach (Neuron neuron in layer.Neurons)
 					{
-						//file.WriteLine("Layer " + layer.Number + ":");
-						foreach (Neuron neuron in layer.Neurons)
+						foreach (var weight in neuron.Weights)
 						{
-							//file.WriteLine($"Neuron {neuron.Index}:");
-							foreach (var weight in neuron.Weights)
-							{
-								//decimalVal = Convert.ToDecimal(weight);
-								//file.WriteLine($"{decimalVal.ToString("#.#")};");
-								file.Write($"{weight.ToString("##.##")}; ");
-							}
-							file.WriteLine();
+							writer.Write(weight.ToString("0.#####") + ";");
 						}
+					}
+					if (layer.Number < 3)
+					{
+						writer.Write("*");
 					}
 				}
 			}
+
+			writer.Close();
 		}
 
 		public void BackwardStep(Example currentExample)
