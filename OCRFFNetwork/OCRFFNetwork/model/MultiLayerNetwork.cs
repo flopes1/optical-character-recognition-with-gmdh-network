@@ -247,21 +247,24 @@ namespace OCRFFNetwork.model
 				if (layer.Number == 2)
 				{
 					hiddenLayer = layer;
-					double[] sensibilitiesOfHiddenLayer = new double[hiddenLayer.Neurons.Count];
+					double[] sensibilitiesOfHiddenLayer = new double[hiddenLayer.Neurons.Count - 1];
 
 					//obtendo a sensibilidade dos neurônios da camada escondida
 					// f¹'(net¹) * Somatorio ((W²ij).d²i )
 					double sum = 0;
 
-					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+					for (int i = 0; i < hiddenLayer.Neurons.Count - 1; i++)
 					{
-						//hiddenLayer.Neurons[i].Weights.Length
-						for (int j = 0; j < lastLayer.Neurons.Count; j++)
+						//Não há sensibilidade para o neurônio BIAS.
+						if (i != 0)
 						{
-							sum += hiddenLayer.Neurons[i].Weights[j] * sensibilitiesOfOutputLayer[j];
+							for (int j = 0; j < lastLayer.Neurons.Count; j++)
+							{
+								sum += lastLayer.Neurons[j].Weights[i] * sensibilitiesOfOutputLayer[j];
+							}
+							sensibilitiesOfHiddenLayer[i] = hiddenLayer.Neurons[i].ActivationFunction.CalculateDerivate(hiddenLayer.Neurons[i].Output) * sum;
+							sum = 0; 
 						}
-						sensibilitiesOfHiddenLayer[i] = hiddenLayer.Neurons[i].ActivationFunction.CalculateDerivate(hiddenLayer.Neurons[i].Output) * sum;
-						sum = 0;
 					}
 
 					//Agora, atualizar os pesos.
