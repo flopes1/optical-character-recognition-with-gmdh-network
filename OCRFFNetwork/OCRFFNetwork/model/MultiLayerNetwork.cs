@@ -64,7 +64,7 @@ namespace OCRFFNetwork.model
 						this.SetOutputLayerError(example.WantedValues);
 						this.BackwardStep(example);
 						//O reajuste dos pesos está no final da backwardStep
-						this.SaveCurrentWeights();
+						//this.SaveCurrentWeights();
 					}
 
 					for (int j = 0; j < countWantedValues; j++)
@@ -93,7 +93,7 @@ namespace OCRFFNetwork.model
 					//EMQ do ciclo de validação.
 					meanSquareErrorFromValidation = (sum / Math.Pow(countWantedValues, 2));
 
-					if (i > 15 && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
+					if (i > Network.Default.IgnoreValidationNumber && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
 					{
 						//O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
 						break;
@@ -101,7 +101,7 @@ namespace OCRFFNetwork.model
 				}
 				else
 				{
-					if (i > 0 && (this.MeanSquareErrorsFromCycles[i-1] <= 0.98 * this.MeanSquareErrorsFromCycles[i]))
+					if (i > 0 && (this.MeanSquareErrorsFromCycles[i-1] <= Network.Default.AcceptanceRatio * this.MeanSquareErrorsFromCycles[i]))
 					{
 						break;
 					}
@@ -157,9 +157,9 @@ namespace OCRFFNetwork.model
 
 			for (int i = 0; i < lastLayer.Neurons.Count; i++)
 			{
-				for (int j = 0; j < sensibilitiesOfOutputLayer.Length; j++)
+				for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
 				{
-					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[j] * lastLayer.Neurons[i].Input;
+					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * lastLayer.Neurons[i].Input;
 				}
 			}
 
@@ -174,9 +174,14 @@ namespace OCRFFNetwork.model
 
 					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
 					{
-						for (int j = 0; j < sensibilitiesOfHiddenLayer.Length; j++)
+						if (i == 0)
 						{
-							hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[j] * hiddenLayer.Neurons[i].Input;
+							continue;
+						}
+
+						for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+						{
+							hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * hiddenLayer.Neurons[i].Input;
 						}
 					}
 				}
@@ -203,7 +208,7 @@ namespace OCRFFNetwork.model
 				//decimal decimalVal;
 
 				//file.WriteLine("Fourth line");
-				foreach (Layer layer in this._layers)
+				foreach (Layer layer in this.Layers)
 				{
 					if (!layer.IsFirstLayer)
 					{
@@ -215,7 +220,7 @@ namespace OCRFFNetwork.model
 							{
 								//decimalVal = Convert.ToDecimal(weight);
 								//file.WriteLine($"{decimalVal.ToString("#.#")};");
-								file.Write($"{weight.ToString("#.##")}; ");
+								file.Write($"{weight.ToString("##.##")}; ");
 							}
 							file.WriteLine();
 						}
@@ -253,17 +258,17 @@ namespace OCRFFNetwork.model
 					// f¹'(net¹) * Somatorio ((W²ij).d²i )
 					double sum = 0;
 
-					for (int i = 0; i < hiddenLayer.Neurons.Count - 1; i++)
+					for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
 					{
 						//Não há sensibilidade para o neurônio BIAS.
 						if (i != 0)
 						{
 							for (int j = 0; j < lastLayer.Neurons.Count; j++)
 							{
-								sum += lastLayer.Neurons[j].Weights[i] * sensibilitiesOfOutputLayer[j];
+								sum += lastLayer.Neurons[j].Weights[i-1] * sensibilitiesOfOutputLayer[j];
 							}
-							sensibilitiesOfHiddenLayer[i] = hiddenLayer.Neurons[i].ActivationFunction.CalculateDerivate(hiddenLayer.Neurons[i].Output) * sum;
-							sum = 0; 
+							sensibilitiesOfHiddenLayer[i - 1] = hiddenLayer.Neurons[i].ActivationFunction.CalculateDerivate(hiddenLayer.Neurons[i].Output) * sum;
+							sum = 0;
 						}
 					}
 

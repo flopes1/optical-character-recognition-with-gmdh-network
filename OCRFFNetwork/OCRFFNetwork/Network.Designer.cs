@@ -103,5 +103,23 @@ namespace OCRFFNetwork {
                 return ((string)(this["WeightsDirectory"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int IgnoreValidationNumber {
+            get {
+                return ((int)(this["IgnoreValidationNumber"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.98")]
+        public double AcceptanceRatio {
+            get {
+                return ((double)(this["AcceptanceRatio"]));
+            }
+        }
     }
 }
