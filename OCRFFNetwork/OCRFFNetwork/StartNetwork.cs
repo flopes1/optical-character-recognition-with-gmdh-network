@@ -24,7 +24,25 @@ namespace OCRFFNetwork
 
 
             var network = new MultiLayerNetwork(cycles);
-			network.TrainNetwork();
+			//network.TrainNetwork();
+			//network.InitializeNetwork();
+
+			var letterReturned = "";
+
+			for (int i = 0; i < network.Cycles.Count; i++)
+			{
+				foreach (Example example in network.Cycles[i].ExamplesTest)
+				{
+					network.InitializeNetwork();
+
+					var outputFromTrainedNetwork = network.CheckElement(example);
+					letterReturned = DatasetUtils.GetLetterFromArray(outputFromTrainedNetwork);
+
+					Console.WriteLine("Expected result: " + example.Name + ". --- Obtained result: " + letterReturned);
+				}
+			}
+
+
 		}
-    }
+	}
 }
