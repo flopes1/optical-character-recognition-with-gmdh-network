@@ -44,6 +44,11 @@ namespace OCRFFNetwork.model
         }
 
 
+        public void InitializeNetwork()
+        {
+
+        }
+
         public void TrainNetwork()
         {
             double meanSquareErrorFromValidation = 0;
