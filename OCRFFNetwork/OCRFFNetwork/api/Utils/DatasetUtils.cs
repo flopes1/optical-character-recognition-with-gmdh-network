@@ -71,103 +71,219 @@ namespace OCRFFNetwork.api.Utils
 			return cycles;
 		}
 
-		public static string GetLetterFromOutputArray(ObservableCollection<double> array)
+		public static ObservableCollection<string> GetLettersFromOutputArray(ObservableCollection<double> array)
 		{
-			string letter = "";
+			//string letter = "";
+
+			//for (int i = 0; i < array.Count; i++)
+			//{
+			//	if (array[i] == array.Max())
+			//	{
+			//		switch (i)
+			//		{
+			//			case 0:
+			//				letter = "A";
+			//				break;
+			//			case 1:
+			//				letter = "B";
+			//				break;
+			//			case 2:
+			//				letter = "C";
+			//				break;
+			//			case 3:
+			//				letter = "D";
+			//				break;
+			//			case 4:
+			//				letter = "E";
+			//				break;
+			//			case 5:
+			//				letter = "F";
+			//				break;
+			//			case 6:
+			//				letter = "G";
+			//				break;
+			//			case 7:
+			//				letter = "H";
+			//				break;
+			//			case 8:
+			//				letter = "I";
+			//				break;
+			//			case 9:
+			//				letter = "J";
+			//				break;
+			//			case 10:
+			//				letter = "K";
+			//				break;
+			//			case 11:
+			//				letter = "L";
+			//				break;
+			//			case 12:
+			//				letter = "M";
+			//				break;
+			//			case 13:
+			//				letter = "N";
+			//				break;
+			//			case 14:
+			//				letter = "O";
+			//				break;
+			//			case 15:
+			//				letter = "P";
+			//				break;
+			//			case 16:
+			//				letter = "Q";
+			//				break;
+			//			case 17:
+			//				letter = "R";
+			//				break;
+			//			case 18:
+			//				letter = "S";
+			//				break;
+			//			case 19:
+			//				letter = "T";
+			//				break;
+			//			case 20:
+			//				letter = "U";
+			//				break;
+			//			case 21:
+			//				letter = "V";
+			//				break;
+			//			case 22:
+			//				letter = "W";
+			//				break;
+			//			case 23:
+			//				letter = "X";
+			//				break;
+			//			case 24:
+			//				letter = "Y";
+			//				break;
+			//			case 25:
+			//				letter = "Z";
+			//				break;
+			//			default:
+			//				break;
+			//		}
+
+			//	}
+
+			//}
+
+			//return letter;
+
+			var str = new List<int>();
+			var toReturn = new ObservableCollection<string>();
+
+			Dictionary<int, double> dir = new Dictionary<int, double>();
+			Dictionary<int, double> aux = new Dictionary<int, double>();
 
 			for (int i = 0; i < array.Count; i++)
 			{
-				if (array[i] == array.Max())
-				{
-					switch (i)
-					{
-						case 0:
-							letter = "A";
-							break;
-						case 1:
-							letter = "B";
-							break;
-						case 2:
-							letter = "C";
-							break;
-						case 3:
-							letter = "D";
-							break;
-						case 4:
-							letter = "E";
-							break;
-						case 5:
-							letter = "F";
-							break;
-						case 6:
-							letter = "G";
-							break;
-						case 7:
-							letter = "H";
-							break;
-						case 8:
-							letter = "I";
-							break;
-						case 9:
-							letter = "J";
-							break;
-						case 10:
-							letter = "K";
-							break;
-						case 11:
-							letter = "L";
-							break;
-						case 12:
-							letter = "M";
-							break;
-						case 13:
-							letter = "N";
-							break;
-						case 14:
-							letter = "O";
-							break;
-						case 15:
-							letter = "P";
-							break;
-						case 16:
-							letter = "Q";
-							break;
-						case 17:
-							letter = "R";
-							break;
-						case 18:
-							letter = "S";
-							break;
-						case 19:
-							letter = "T";
-							break;
-						case 20:
-							letter = "U";
-							break;
-						case 21:
-							letter = "V";
-							break;
-						case 22:
-							letter = "W";
-							break;
-						case 23:
-							letter = "X";
-							break;
-						case 24:
-							letter = "Y";
-							break;
-						case 25:
-							letter = "Z";
-							break;
-						default:
-							break;
-					}
-
-				}
-
+				dir.Add(i, array[i]);
+				aux.Add(i, array[i]);
 			}
 
-			return letter;
+			var valor = 0.0;
+			for (int i = 0; i < dir.Count; i++)
+			{
+				if (aux.TryGetValue(i, out valor))
+				{
+					if (valor == aux.Max(k => k.Value))
+					{
+						str.Add(i);
+						aux.Remove(i);
+						i = -1;
+					}
+				}
+			}
+
+			//Switch index
+			for (int i = 0; i < 5; i++)
+			{
+				switch (str[i])
+				{
+					case 0:
+						toReturn.Add("A");
+						break;
+					case 1:
+						toReturn.Add("B");
+						break;
+					case 2:
+						toReturn.Add("C");
+						break;
+					case 3:
+						toReturn.Add("D");
+						break;
+					case 4:
+						toReturn.Add("E");
+						break;
+					case 5:
+						toReturn.Add("F");
+						break;
+					case 6:
+						toReturn.Add("G");
+						break;
+					case 7:
+						toReturn.Add("H");
+						break;
+					case 8:
+						toReturn.Add("I");
+						break;
+					case 9:
+						toReturn.Add("J");
+						break;
+					case 10:
+						toReturn.Add("K");
+						break;
+					case 11:
+						toReturn.Add("L");
+						break;
+					case 12:
+						toReturn.Add("M");
+						break;
+					case 13:
+						toReturn.Add("N");
+						break;
+					case 14:
+						toReturn.Add("O");
+						break;
+					case 15:
+						toReturn.Add("P");
+						break;
+					case 16:
+						toReturn.Add("Q");
+						break;
+					case 17:
+						toReturn.Add("R");
+						break;
+					case 18:
+						toReturn.Add("S");
+						break;
+					case 19:
+						toReturn.Add("T");
+						break;
+					case 20:
+						toReturn.Add("U");
+						break;
+					case 21:
+						toReturn.Add("V");
+						break;
+					case 22:
+						toReturn.Add("W");
+						break;
+					case 23:
+						toReturn.Add("X");
+						break;
+					case 24:
+						toReturn.Add("Y");
+						break;
+					case 25:
+						toReturn.Add("Z");
+						break;
+					default:
+						break;
+				}
+			}
+
+			return toReturn;
 		}
 
 		private static ObservableCollection<double> GetLetterWantedValues(string letter)
