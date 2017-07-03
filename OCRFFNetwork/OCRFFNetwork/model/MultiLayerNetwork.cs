@@ -47,6 +47,81 @@ namespace OCRFFNetwork.model
         public void InitializeNetwork()
         {
 
+            if (this.IsNetworkTrained())
+            {
+                Console.WriteLine("The network was already trained. The saved weights will be loaded");
+                this.LoadNetWorkWeights();
+            }
+            else
+            {
+                this.TrainNetwork();
+            }
+
+        }
+
+        private void LoadNetWorkWeights()
+        {
+
+            var hiddenLayerWeights = Network.Default.WeightsHidden;
+            var outputLayerWeights = Network.Default.WeightsOutput;
+
+            var hiddentWeights = File.ReadAllText(hiddenLayerWeights);
+            hiddentWeights = hiddentWeights.Remove(hiddentWeights.LastIndexOf(';'));
+
+            var splitedHiddenWeights = hiddentWeights.Split(';');
+            hiddentWeights = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            this.PopulateNetWorkWeights(Array.ConvertAll(splitedHiddenWeights, Double.Parse), 2);
+
+            splitedHiddenWeights = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+
+            var outputWeights = File.ReadAllText(outputLayerWeights);
+            outputWeights = outputWeights.Remove(outputWeights.LastIndexOf(';'));
+
+            var splitedOutputWeights = outputWeights.Split(';');
+            outputWeights = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            this.PopulateNetWorkWeights(Array.ConvertAll(splitedOutputWeights, Double.Parse), 3);
+            splitedOutputWeights = null;
+
+        }
+
+        private void PopulateNetWorkWeights(double[] weights, int layer)
+        {
+            var layerToPopulate = this.Layers.Where(l => l.Number == layer).FirstOrDefault();
+
+            Console.WriteLine("Loading weights for layer: " + layerToPopulate.Number);
+
+            if (layerToPopulate != null)
+            {
+                var index = 0;
+                foreach (var neuron in layerToPopulate.Neurons)
+                {
+                    for (var i = 0; i < neuron.Weights.Length; i++)
+                    {
+                        neuron.Weights[i] = weights[index];
+                        index++;
+
+                    }
+                }
+            }
+        }
+
+        private bool IsNetworkTrained()
+        {
+            var hiddenLayerWeights = Network.Default.WeightsHidden;
+            var outputLayerWeights = Network.Default.WeightsOutput;
+
+            return File.Exists(hiddenLayerWeights) && File.Exists(outputLayerWeights);
         }
 
         public void TrainNetwork()
@@ -207,9 +282,9 @@ namespace OCRFFNetwork.model
         /**
          *  Metodo que vai usar a rede já treinada e testar o resultado para o exemplo passado
          * */
-        public bool CheckElement(Example elemtToTest)
+        public ObservableCollection<double> CheckElement(Example elemtToTest)
         {
-            throw new NotImplementedException();
+            return this.ForwardStep(elemtToTest);
         }
 
         public void SaveCurrentWeights()
