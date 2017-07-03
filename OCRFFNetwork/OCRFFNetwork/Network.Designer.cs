@@ -97,10 +97,10 @@ namespace OCRFFNetwork {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\weights\\weightsSaved.txt")]
-        public string WeightsDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\weights\\weightsHiddenLayer.txt")]
+        public string WeightsHidden {
             get {
-                return ((string)(this["WeightsDirectory"]));
+                return ((string)(this["WeightsHidden"]));
             }
         }
         
@@ -119,6 +119,18 @@ namespace OCRFFNetwork {
         public double AcceptanceRatio {
             get {
                 return ((double)(this["AcceptanceRatio"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\weights\\weightsOutputLayer.txt")]
+        public string WeightsOutput {
+            get {
+                return ((string)(this["WeightsOutput"]));
+            }
+            set {
+                this["WeightsOutput"] = value;
             }
         }
     }
