@@ -71,7 +71,7 @@ namespace OCRFFNetwork.api.Utils
 			return cycles;
 		}
 
-		public static string GetLetterFromArray(ObservableCollection<double> array)
+		public static string GetLetterFromOutputArray(ObservableCollection<double> array)
 		{
 			string letter = "";
 

@@ -25,20 +25,29 @@ namespace OCRFFNetwork
 
             var network = new MultiLayerNetwork(cycles);
 			//network.TrainNetwork();
-			//network.InitializeNetwork();
+			network.InitializeNetwork();
 
 			var letterReturned = "";
+			var match = false;
+			var matchString = "";
 
 			for (int i = 0; i < network.Cycles.Count; i++)
 			{
 				foreach (Example example in network.Cycles[i].ExamplesTest)
 				{
-					network.InitializeNetwork();
-
 					var outputFromTrainedNetwork = network.CheckElement(example);
-					letterReturned = DatasetUtils.GetLetterFromArray(outputFromTrainedNetwork);
+					letterReturned = DatasetUtils.GetLetterFromOutputArray(outputFromTrainedNetwork);
 
-					Console.WriteLine("Expected result: " + example.Name + ". --- Obtained result: " + letterReturned);
+					if (example.Name == letterReturned)
+					{
+						match = true;
+					}
+
+					matchString = match ? " ACERTOU" : " ERROU";
+
+					Console.WriteLine("Expected result: " + example.Name + ". --- Obtained result: " + letterReturned + matchString);
+
+					match = false;
 				}
 			}
 
