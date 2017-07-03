@@ -40,6 +40,8 @@ namespace OCRFFNetwork.model
 
         public void CalculateLayerOutput(ObservableCollection<double> inputs)
         {
+			this.Clean();
+
             foreach (var neuron in this.Neurons)
             {
                 neuron.CalculateNeuronOutput(inputs);
@@ -48,7 +50,13 @@ namespace OCRFFNetwork.model
             }
         }
 
-        public void CalculateLayerError(ObservableCollection<double> wantedValues)
+		private void Clean()
+		{
+			this.InputValues.Clear();
+			this.OutputValues.Clear();
+		}
+
+		public void CalculateLayerError(ObservableCollection<double> wantedValues)
         {
             
             for(int i = 0; i < this.Neurons.Count; i++)

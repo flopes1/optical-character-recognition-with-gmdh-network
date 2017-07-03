@@ -50,7 +50,7 @@ namespace OCRFFNetwork.model
 
             for (int i = 0; i < this.Cycles.Count; i++)
             {
-                double sum = 0, countWantedValues = 0;
+                double sumTrain = 0, sumValidate = 0, countWantedValues = 0;
 
                 //Treinamento
                 foreach (Example example in this.Cycles[i].ExamplesTrain)
@@ -73,7 +73,7 @@ namespace OCRFFNetwork.model
 
                     for (int j = 0; j < countWantedValues; j++)
                     {
-                        sum += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
+						sumTrain += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
                     }
                 }
 
@@ -81,9 +81,10 @@ namespace OCRFFNetwork.model
                 Console.WriteLine("Calculating EMQ members");
 
                 //Adicionando EMQ do treinamento
-                this.MeanSquareErrorsFromCycles.Add(sum / Math.Pow(countWantedValues, 2));
+                this.MeanSquareErrorsFromCycles.Add(sumTrain / Math.Pow(countWantedValues, 2));
 
                 Console.WriteLine("EMQ Train: " + this.MeanSquareErrorsFromCycles.LastOrDefault());
+
                 //Validação
                 if (this.Cycles[i].ExamplesValidation.Count > 0)
                 {
@@ -97,12 +98,12 @@ namespace OCRFFNetwork.model
 
                         for (int j = 0; j < countWantedValues; j++)
                         {
-                            sum += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
+							sumValidate += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
                         }
                     }
 
                     //EMQ do ciclo de validação.
-                    meanSquareErrorFromValidation = (sum / Math.Pow(countWantedValues, 2));
+                    meanSquareErrorFromValidation = (sumValidate / Math.Pow(countWantedValues, 2));
 
                     Console.WriteLine("EMQ validation:" + meanSquareErrorFromValidation);
 
@@ -171,42 +172,71 @@ namespace OCRFFNetwork.model
 
         public void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer)
         {
-            //Reajuste dos pesos que ligam à camada de saída para a camada escondida.
-            Layer lastLayer = this.Layers.LastOrDefault();
+			Layer firstLayer = this.Layers.FirstOrDefault();
+			var hiddenLayer = this.Layers.Where(l => l.Number == 2).FirstOrDefault();
+			Layer lastLayer = this.Layers.LastOrDefault();
 
-            for (int i = 0; i < lastLayer.Neurons.Count; i++)
-            {
-                for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
-                {
-                    lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * lastLayer.Neurons[i].Input;
-                }
-            }
+			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
+			for (int i = 0; i < lastLayer.Neurons.Count; i++)
+			{
+				for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+				{
+					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * hiddenLayer.Neurons[j].Output;
+				}
+			}
 
-            //Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
-            //gambiarra
-            var hiddenLayer = this.Layers.Where(l => l.Number == 2).FirstOrDefault();
+			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
+			for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+			{
+				if (i == 0)
+				{
+					continue;
+				}
 
-            for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
-            {
-                if (i == 0)
-                {
-                    continue;
-                }
+				for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+				{
+					hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * firstLayer.Neurons[j].Input;
+				}
 
-                for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
-                {
-                    hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * hiddenLayer.Neurons[i].Input;
-                }
+			}
 
-            }
-            //fim da gambiarra
 
-        }
+			////Reajuste dos pesos que ligam à camada de saída para a camada escondida.
+			//Layer lastLayer = this.Layers.LastOrDefault();
 
-        /**
+			//for (int i = 0; i < lastLayer.Neurons.Count; i++)
+			//{
+			//    for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+			//    {
+			//        lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * lastLayer.Neurons[i].Input;
+			//    }
+			//}
+
+			////Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
+			////gambiarra
+			//var hiddenLayer = this.Layers.Where(l => l.Number == 2).FirstOrDefault();
+
+			//for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+			//{
+			//    if (i == 0)
+			//    {
+			//        continue;
+			//    }
+
+			//    for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+			//    {
+			//        hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * hiddenLayer.Neurons[i].Input;
+			//    }
+
+			//}
+			////fim da gambiarra
+
+		}
+
+		/**
          *  Metodo que vai usar a rede já treinada e testar o resultado para o exemplo passado
          * */
-        public bool CheckElement(Example elemtToTest)
+		public bool CheckElement(Example elemtToTest)
         {
             throw new NotImplementedException();
         }
@@ -287,7 +317,6 @@ namespace OCRFFNetwork.model
             //fim da gambiarra
         }
 
-        //TODO adicionar configurações do calculo da sensibilidade
         private void LoadNetworkConfigurations()
         {
             this.LearningRate = Network.Default.LearningRate;
