@@ -55,15 +55,16 @@ namespace OCRFFNetwork.model
                 //Treinamento
                 foreach (Example example in this.Cycles[i].ExamplesTrain)
                 {
+                    Console.WriteLine("Training example: " + example.Name + " in cycle: " + (i + 1));
+
+                    Console.WriteLine("Executing forward");
                     var exampleResult = this.ForwardStep(example);
                     countWantedValues = example.WantedValues.Count;
 
-                    Console.WriteLine("Training example: " + example.Name + " in cycle: " + (i + 1));
 
                     //Se o resultado não for o esperado, precisa fazer a fase backward e atualizar os pesos
                     if (!this.CheckResult(exampleResult, example.WantedValues))
                     {
-
                         Console.WriteLine("Executing backward and updating weights");
 
                         this.SetOutputLayerError(example.WantedValues);
@@ -73,7 +74,7 @@ namespace OCRFFNetwork.model
 
                     for (int j = 0; j < countWantedValues; j++)
                     {
-						sumTrain += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
+                        sumTrain += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
                     }
                 }
 
@@ -98,7 +99,7 @@ namespace OCRFFNetwork.model
 
                         for (int j = 0; j < countWantedValues; j++)
                         {
-							sumValidate += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
+                            sumValidate += Math.Pow(example.WantedValues[j] - exampleResult[j], 2);
                         }
                     }
 
@@ -107,12 +108,10 @@ namespace OCRFFNetwork.model
 
                     Console.WriteLine("EMQ validation:" + meanSquareErrorFromValidation);
 
+                    //O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
                     if (i > Network.Default.IgnoreValidationNumber && meanSquareErrorFromValidation >= this.MeanSquareErrorsFromCycles[i])
                     {
-
-                        Console.WriteLine("Finishing training cause EMQ method in cycle: " + (i + 1));
-
-                        //O EMQ na validação cruzada foi maior que o calculado. O treinamento deve parar.
+                        Console.WriteLine("Finishing training cause cross validation method in cycle: " + (i + 1));
                         break;
                     }
                 }
@@ -120,9 +119,7 @@ namespace OCRFFNetwork.model
                 {
                     if (i > 0 && (this.MeanSquareErrorsFromCycles[i - 1] <= Network.Default.AcceptanceRatio * this.MeanSquareErrorsFromCycles[i]))
                     {
-
-                        Console.WriteLine("Finishing training cause cross validation method in cycle: " + (i + 1));
-
+                        Console.WriteLine("Finishing training cause EMQ method in cycle: " + (i + 1));
                         break;
                     }
                 }
@@ -172,90 +169,69 @@ namespace OCRFFNetwork.model
 
         public void UpdateNetworkWeights(double[] sensibilitiesOfHiddenLayer, double[] sensibilitiesOfOutputLayer)
         {
-			Layer firstLayer = this.Layers.FirstOrDefault();
-			var hiddenLayer = this.Layers.Where(l => l.Number == 2).FirstOrDefault();
-			Layer lastLayer = this.Layers.LastOrDefault();
+            Layer firstLayer = this.Layers.FirstOrDefault();
+            var hiddenLayer = this.Layers.Where(l => l.Number == 2).FirstOrDefault();
+            Layer lastLayer = this.Layers.LastOrDefault();
 
-			//Reajuste dos pesos que ligam à camada de saída para a camada escondida.
-			for (int i = 0; i < lastLayer.Neurons.Count; i++)
-			{
-				for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
-				{
-					lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * hiddenLayer.Neurons[j].Output;
-				}
-			}
+            //Reajuste dos pesos que ligam à camada de saída para a camada escondida.
+            for (int i = 0; i < lastLayer.Neurons.Count; i++)
+            {
+                for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+                {
+                    lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * hiddenLayer.Neurons[j].Output;
+                }
+            }
 
-			//Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
-			for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
-			{
-				if (i == 0)
-				{
-					continue;
-				}
+            //Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
+            for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
+            {
+                if (i == 0)
+                {
+                    continue;
+                }
 
-				for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
-				{
-					hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * firstLayer.Neurons[j].Input;
-				}
+                for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
+                {
+                    hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * firstLayer.Neurons[j].Input;
+                }
 
-			}
+            }
 
+        }
 
-			////Reajuste dos pesos que ligam à camada de saída para a camada escondida.
-			//Layer lastLayer = this.Layers.LastOrDefault();
-
-			//for (int i = 0; i < lastLayer.Neurons.Count; i++)
-			//{
-			//    for (int j = 0; j < lastLayer.Neurons.FirstOrDefault().Weights.Length; j++)
-			//    {
-			//        lastLayer.Neurons[i].Weights[j] = lastLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfOutputLayer[i] * lastLayer.Neurons[i].Input;
-			//    }
-			//}
-
-			////Reajuste dos pesos que ligam à camada escondida para a camada de entrada.
-			////gambiarra
-			//var hiddenLayer = this.Layers.Where(l => l.Number == 2).FirstOrDefault();
-
-			//for (int i = 0; i < hiddenLayer.Neurons.Count; i++)
-			//{
-			//    if (i == 0)
-			//    {
-			//        continue;
-			//    }
-
-			//    for (int j = 0; j < hiddenLayer.Neurons.FirstOrDefault().Weights.Length; j++)
-			//    {
-			//        hiddenLayer.Neurons[i].Weights[j] = hiddenLayer.Neurons[i].Weights[j] + this.LearningRate * sensibilitiesOfHiddenLayer[i - 1] * hiddenLayer.Neurons[i].Input;
-			//    }
-
-			//}
-			////fim da gambiarra
-
-		}
-
-		/**
+        /**
          *  Metodo que vai usar a rede já treinada e testar o resultado para o exemplo passado
          * */
-		public bool CheckElement(Example elemtToTest)
+        public bool CheckElement(Example elemtToTest)
         {
             throw new NotImplementedException();
         }
 
         public void SaveCurrentWeights()
         {
-            var filePath = Network.Default.WeightsDirectory;
+            var filePathHiddenLayer = Network.Default.WeightsHidden;
+            var filePathOutputLayer = Network.Default.WeightsOutput;
 
-            if (File.Exists(filePath))
+
+            if (File.Exists(filePathHiddenLayer))
             {
-                File.Delete(filePath);
+                File.Delete(filePathHiddenLayer);
             }
 
-            var writer = File.CreateText(filePath);
+            if (File.Exists(filePathOutputLayer))
+            {
+                File.Delete(filePathOutputLayer);
+            }
+
+            var writerHidden = File.CreateText(filePathHiddenLayer);
+            var writerOutput = File.CreateText(filePathOutputLayer);
 
             foreach (Layer layer in this.Layers)
             {
                 if (!layer.IsFirstLayer)
                 {
+                    var writer = layer.Number == 2 ? writerHidden : writerOutput;
+
                     foreach (Neuron neuron in layer.Neurons)
                     {
                         foreach (var weight in neuron.Weights)
@@ -263,14 +239,11 @@ namespace OCRFFNetwork.model
                             writer.Write(weight.ToString("0.#####") + ";");
                         }
                     }
-                    if (layer.Number < 3)
-                    {
-                        writer.Write("*");
-                    }
                 }
             }
 
-            writer.Close();
+            writerHidden.Close();
+            writerOutput.Close();
         }
 
         public void BackwardStep(Example currentExample)
