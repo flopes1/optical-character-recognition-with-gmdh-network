@@ -28,7 +28,6 @@ namespace OCRFFNetwork
 			network.InitializeNetwork();
 
 			var letterReturned = "";
-			var match = false;
 			var matchString = "";
 
 			for (int i = 0; i < network.Cycles.Count; i++)
@@ -38,16 +37,9 @@ namespace OCRFFNetwork
 					var outputFromTrainedNetwork = network.CheckElement(example);
 					letterReturned = DatasetUtils.GetLetterFromOutputArray(outputFromTrainedNetwork);
 
-					if (example.Name == letterReturned)
-					{
-						match = true;
-					}
-
-					matchString = match ? " ACERTOU" : " ERROU";
+					matchString = example.Name == letterReturned ? " ACERTOU" : " ERROU";
 
 					Console.WriteLine("Expected result: " + example.Name + ". --- Obtained result: " + letterReturned + matchString);
-
-					match = false;
 				}
 			}
 
