@@ -70,7 +70,7 @@ namespace OCRFFNetwork {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.7")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.4")]
         public double LearningRate {
             get {
                 return ((double)(this["LearningRate"]));
@@ -106,7 +106,7 @@ namespace OCRFFNetwork {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
         public int IgnoreValidationNumber {
             get {
                 return ((int)(this["IgnoreValidationNumber"]));
@@ -122,15 +122,21 @@ namespace OCRFFNetwork {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\weights\\weightsOutputLayer.txt")]
         public string WeightsOutput {
             get {
                 return ((string)(this["WeightsOutput"]));
             }
-            set {
-                this["WeightsOutput"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.05")]
+        public double Theshhold {
+            get {
+                return ((double)(this["Theshhold"]));
             }
         }
     }

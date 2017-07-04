@@ -14,9 +14,9 @@ namespace OCRFFNetwork.model.api.image
         public static void Resize(string srcPath, int width, int height)
         {
             Image image = Image.FromFile(srcPath);
-            Bitmap resultImage = Resize(image, width, height);
+            Bitmap resultImage = new Bitmap(image); //Resize(image, width, height);
             resultImage = BinarizeImage(resultImage);
-            resultImage.Save(srcPath.Replace(".png", "_" + width + "x" + height + ".png"));
+            resultImage.Save(srcPath.Replace(".gif", "_" + width + "x" + height + ".png"));
             resultImage.Dispose();
         }
 

@@ -20,10 +20,10 @@ namespace OCRFFNetwork.dataset.api.image
 
             foreach (var letterFolder in inputDirectory)
             {
-                var trainFolder = Directory.GetDirectories(letterFolder);
-                var allFolders = new ObservableCollection<String>(trainFolder);
-                var trainFolderPath = allFolders.Where(f => f.Contains("train")).FirstOrDefault();
-                var trainFolderFiles = Directory.GetFiles(trainFolderPath);
+                //var trainFolder = Directory.GetDirectories(letterFolder);
+                //var allFolders = new ObservableCollection<String>(trainFolder);
+                //var trainFolderPath = allFolders.Where(f => f.Contains("train")).FirstOrDefault();
+                //var trainFolderFiles = Directory.GetFiles(trainFolderPath);
 
                 var currentLetter = Path.GetFileName(letterFolder);
 
@@ -31,28 +31,31 @@ namespace OCRFFNetwork.dataset.api.image
                 var validationPath = outputDatasetDirectory + "\\" + currentLetter + "\\" + "validation\\";
                 var testPath = outputDatasetDirectory + "\\" + currentLetter + "\\" + "test\\";
 
-                for (int i = 0; i < 200; i++)
+                var files = Directory.GetFiles(letterFolder);
+
+                for (int i = 0; i < 160; i++)
                 {
                     var outputImage = "";
-                    if (i < 100)
+                    if (i < 80)
                     {
                         Directory.CreateDirectory(trainPath);
-                        outputImage = trainPath + Path.GetFileName(trainFolderFiles[i]);
+                        outputImage = trainPath + Path.GetFileName(files[i]);
 
                     }
-                    else if (i < 150)
+                    else if (i < 120)
                     {
                         Directory.CreateDirectory(validationPath);
-                        outputImage = validationPath + Path.GetFileName(trainFolderFiles[i]);
+                        outputImage = validationPath + Path.GetFileName(files[i]);
                     }
-                    else
+                    else if (i < 160)
                     {
                         Directory.CreateDirectory(testPath);
-                        outputImage = testPath + Path.GetFileName(trainFolderFiles[i]);
+                        outputImage = testPath + Path.GetFileName(files[i]);
                     }
+
                     if (!string.IsNullOrEmpty(outputImage))
                     {
-                        File.Copy(trainFolderFiles[i], outputImage);
+                        File.Copy(files[i], outputImage);
                         ImageUtils.Resize(outputImage, 64, 64);
                         while(true)
                         {

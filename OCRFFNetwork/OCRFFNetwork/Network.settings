@@ -18,7 +18,7 @@
       <Value Profile="(Default)">7</Value>
     </Setting>
     <Setting Name="LearningRate" Type="System.Double" Scope="Application">
-      <Value Profile="(Default)">0.7</Value>
+      <Value Profile="(Default)">0.4</Value>
     </Setting>
     <Setting Name="NumberOfLayers" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">3</Value>
@@ -30,13 +30,16 @@
       <Value Profile="(Default)">..\..\..\weights\weightsHiddenLayer.txt</Value>
     </Setting>
     <Setting Name="IgnoreValidationNumber" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">15</Value>
+      <Value Profile="(Default)">50</Value>
     </Setting>
     <Setting Name="AcceptanceRatio" Type="System.Double" Scope="Application">
       <Value Profile="(Default)">0.98</Value>
     </Setting>
-    <Setting Name="WeightsOutput" Type="System.String" Scope="User">
+    <Setting Name="WeightsOutput" Type="System.String" Scope="Application">
       <Value Profile="(Default)">..\..\..\weights\weightsOutputLayer.txt</Value>
+    </Setting>
+    <Setting Name="Theshhold" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">0.05</Value>
     </Setting>
   </Settings>
 </SettingsFile>

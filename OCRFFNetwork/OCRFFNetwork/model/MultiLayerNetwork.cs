@@ -132,15 +132,20 @@ namespace OCRFFNetwork.model
             {
                 double sumTrain = 0, sumValidate = 0, countWantedValues = 0;
 
+                this.Cycles[i].ExamplesTrain = this.RandomizeList(this.Cycles[i].ExamplesTrain);
+
                 //Treinamento
                 foreach (Example example in this.Cycles[i].ExamplesTrain)
                 {
-                    Console.WriteLine("Training example: " + example.Name + " in cycle: " + (i + 1));
+                    Console.WriteLine("\nTraining example: " + example.Name + " in cycle: " + (i + 1));
 
                     Console.WriteLine("Executing forward");
                     var exampleResult = this.ForwardStep(example);
-                    countWantedValues = example.WantedValues.Count;
 
+                    var normalizedResults = DatasetUtils.GetLettersFromOutputArray(exampleResult);
+
+                    Console.WriteLine("Results from forward: " + string.Join(" ", normalizedResults) + " -- Max Result: " + exampleResult.Max());
+                    countWantedValues = example.WantedValues.Count;
 
                     //Se o resultado não for o esperado, precisa fazer a fase backward e atualizar os pesos
                     if (!this.CheckResult(exampleResult, example.WantedValues))
@@ -159,7 +164,7 @@ namespace OCRFFNetwork.model
                 }
 
 
-                Console.WriteLine("Calculating EMQ members");
+                Console.WriteLine("\nCalculating EMQ members");
 
                 //Adicionando EMQ do treinamento
                 this.MeanSquareErrorsFromCycles.Add(sumTrain / Math.Pow(countWantedValues, 2));
@@ -171,6 +176,8 @@ namespace OCRFFNetwork.model
                 {
 
                     Console.WriteLine("Calculating results for validation cycle: " + (i + 1));
+
+                    this.Cycles[i].ExamplesValidation = this.RandomizeList(this.Cycles[i].ExamplesValidation);
 
                     foreach (Example example in this.Cycles[i].ExamplesValidation)
                     {
@@ -208,6 +215,12 @@ namespace OCRFFNetwork.model
             this.SaveCurrentWeights();
         }
 
+        public ObservableCollection<Example> RandomizeList(ObservableCollection<Example> examplesTrain)
+        {
+            var r = new Random();
+            return new ObservableCollection<Example>(examplesTrain.OrderBy(k => r.Next()).ToArray());
+        }
+
         private void SetOutputLayerError(ObservableCollection<double> wantedValues)
         {
             //Calcula o erros dos neuronios da camada de saída
@@ -218,7 +231,12 @@ namespace OCRFFNetwork.model
         {
             for (int i = 0; i < wantedValues.Count; i++)
             {
-                if (wantedValues[i] != exampleResult[i])
+                var acceptableVale = wantedValues[i];
+                var calculedResult = exampleResult[i];
+
+                var theshhold = Network.Default.Theshhold;
+
+                if (!(calculedResult >= (acceptableVale * (1 - theshhold)) && calculedResult <= (acceptableVale * (1 + theshhold))))
                 {
                     return false;
                 }
